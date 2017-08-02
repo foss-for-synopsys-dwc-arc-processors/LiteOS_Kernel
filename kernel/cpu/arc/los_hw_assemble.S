@@ -1,8 +1,8 @@
 /*----------------------------------------------------------------------------
  * Copyright (c) <2013-2015>, <Huawei Technologies Co., Ltd>
- * 
+ *
  * Copyright (c) 2017, Synopsys, Inc.
- * Modified for port to ARC processor by Wayne Ren wei.ren@synopsys.com 
+ * Modified for port to ARC processor by Wayne Ren wei.ren@synopsys.com
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification,
@@ -42,7 +42,7 @@
 #include "inc/arc/arc_asm_common.h"
 
 
-#define OS_TASK_STATUS_RUNNING_BIT 7
+#define OS_TASK_STATUS_RUNNING_BIT 4
 /*
  *  task dispatcher
  *
@@ -54,7 +54,7 @@ osTaskSchedule:
 /*
  *  the pre-conditions of this routine are task context, CPU is
  *  locked, dispatch is enabled.
- */	
+ */
 	sr 	blink, [AUX_ERRET]
 	lr 	blink, [AUX_STATUS32]
 	sr 	blink, [AUX_ERSTATUS]
@@ -81,8 +81,8 @@ LOS_StartToRun:
 	//  g_stLosTask.pstRunTask = g_stLosTask.pstNewTask;
 	ld 	r2, [g_stLosTask, 4]
 	st 	r2, [g_stLosTask]
-	//   g_stLosTask.pstRunTask->usTaskStatus |=  OS_TASK_STATUS_RUNNING;	
-	ldh 	r1, [r2, 4]   
+	//   g_stLosTask.pstRunTask->usTaskStatus |=  OS_TASK_STATUS_RUNNING;
+	ldh 	r1, [r2, 4]
 	bset 	r1, r1, OS_TASK_STATUS_RUNNING_BIT //
 	sth 	r1, [r2, 4]
 	//   g_bTaskScheduled = 1;
@@ -106,7 +106,7 @@ dispatcher:
 	ldh 	r1, [r2, 4]
 	bset	r1, r1, OS_TASK_STATUS_RUNNING_BIT
 	sth 	r1, [r2, 4]
-// recover the new running task	
+// recover the new running task
 dispatcher_0:
 	ld	sp, [r2]	/* recover task stack */
 	RESTORE_CALLEE_REGS
@@ -247,7 +247,7 @@ ret_int:
 	bset	r1, r1, OS_TASK_STATUS_RUNNING_BIT
 	sth 	r1, [r2, 4]
 
-	ld	sp, [r2]  // recover task stack 
+	ld	sp, [r2]  // recover task stack
 
 	RESTORE_CALLEE_REGS
 ret_int_r_1:
